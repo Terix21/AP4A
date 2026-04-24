@@ -1,12 +1,13 @@
-import { OrthographicCamera, Environment } from '@react-three/drei';
+import { OrthographicCamera, Environment, MapControls, Line } from '@react-three/drei';
 import { useGameStore } from '../../store/gameStore';
 import * as THREE from 'three';
 import Drones from './Drones';
+import { Pathfinding } from '../../systems/Pathfinding';
 
 export default function Scene() {
   const threatLevel = useGameStore(state => state.threatLevel);
   const selectedEntityId = useGameStore(state => state.selectedEntityId);
-  const patrolWaypoint = useGameStore(state => state.patrolWaypoint);
+  const activePath = useGameStore(state => state.activePath);
 
   // Danger lighting based on threat level
   const ambientIntensity = threatLevel > 50 ? 0.1 : 0.2;
@@ -32,6 +33,15 @@ export default function Scene() {
         zoom={30}
       />
       
+      <MapControls 
+        enableRotate={false} 
+        enableZoom={true} 
+        enablePan={true}
+        minZoom={10} 
+        maxZoom={120} 
+        panSpeed={1.5}
+      />
+      
       <ambientLight intensity={ambientIntensity} />
       <directionalLight 
         position={[5, 10, 5]} 
@@ -51,19 +61,27 @@ export default function Scene() {
         position={[0, -0.49, 0]} 
         onContextMenu={(e) => {
           e.stopPropagation();
-          useGameStore.getState().setPatrolWaypoint([e.point.x, e.point.y, e.point.z]);
+          const state = useGameStore.getState();
+          const path = Pathfinding.calculatePath(state.dronePosition, [e.point.x, e.point.y, e.point.z]);
+          if (path) {
+            state.setActivePath(path);
+          }
         }}
       >
         <planeGeometry args={[100, 100]} />
         <meshBasicMaterial visible={false} />
       </mesh>
 
-      {/* Patrol Waypoint Marker */}
-      {patrolWaypoint && (
-        <mesh position={patrolWaypoint} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.5, 0.7, 32]} />
-          <meshBasicMaterial color="#00ffcc" transparent opacity={0.5} side={THREE.DoubleSide} />
-        </mesh>
+      {/* Patrol Path Marker */}
+      {activePath && activePath.length > 1 && (
+        <Line 
+          points={activePath.map(p => new THREE.Vector3(p[0], 0.1, p[2]))} 
+          color="#00ffcc" 
+          lineWidth={2} 
+          dashed={true} 
+          dashSize={0.5} 
+          gapSize={0.2}
+        />
       )}
 
       {/* Selection Ring */}

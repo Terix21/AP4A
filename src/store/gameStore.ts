@@ -23,7 +23,8 @@ export interface GameState {
   
   cameraView: 'base' | 'world';
   selectedEntityId: string | null;
-  patrolWaypoint: [number, number, number] | null;
+  activePath: [number, number, number][] | null;
+  dronePosition: [number, number, number];
   navigationRequest: string | null;
 
   salvagedComponents: number;
@@ -52,7 +53,8 @@ export interface GameState {
   setGameTimeHours: (hours: number) => void;
   setCameraView: (view: 'base' | 'world') => void;
   setSelectedEntity: (id: string | null) => void;
-  setPatrolWaypoint: (waypoint: [number, number, number] | null) => void;
+  setActivePath: (path: [number, number, number][] | null) => void;
+  setDronePosition: (pos: [number, number, number]) => void;
   requestNavigation: (path: string | null) => void;
   upgradeFacility: (facility: string) => void;
   addActiveSLA: (creditsPerHourBonus: number) => void;
@@ -78,7 +80,8 @@ export const useGameStore = create<GameState>((set) => ({
   
   cameraView: 'base',
   selectedEntityId: null,
-  patrolWaypoint: null,
+  activePath: null,
+  dronePosition: [0, 0, 0],
   navigationRequest: null,
   
   gameTimeHours: 6.0, // Start at 06:00
@@ -113,7 +116,8 @@ export const useGameStore = create<GameState>((set) => ({
   setGameTimeHours: (hours) => set({ gameTimeHours: hours % 28 }),
   setCameraView: (view) => set({ cameraView: view }),
   setSelectedEntity: (id) => set({ selectedEntityId: id }),
-  setPatrolWaypoint: (waypoint) => set({ patrolWaypoint: waypoint }),
+  setActivePath: (path) => set({ activePath: path }),
+  setDronePosition: (pos) => set({ dronePosition: pos }),
   requestNavigation: (path) => set({ navigationRequest: path }),
 
   upgradeFacility: (facility) => set((state) => ({
