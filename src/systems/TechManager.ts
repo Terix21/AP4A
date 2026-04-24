@@ -37,6 +37,33 @@ export const AvailableTechs: TechItem[] = [
     costCredits: 200,
     researchTimeMs: 4 * 60 * 60 * 1000, // 4 hours
     prerequisites: ['tech_drone_ai']
+  },
+  {
+    id: 'tech_tier_2',
+    name: 'Sector Tech Tier II',
+    description: 'Unlocks Level 30 facilities and Level 50 unit caps.',
+    costScrap: 1000,
+    costCredits: 300,
+    researchTimeMs: 4 * 60 * 60 * 1000,
+    prerequisites: ['tech_smelting']
+  },
+  {
+    id: 'tech_tier_3',
+    name: 'Sector Tech Tier III',
+    description: 'Unlocks Level 45 facilities and Level 75 unit caps.',
+    costScrap: 2500,
+    costCredits: 800,
+    researchTimeMs: 8 * 60 * 60 * 1000,
+    prerequisites: ['tech_tier_2']
+  },
+  {
+    id: 'tech_tier_4',
+    name: 'Sector Tech Tier IV',
+    description: 'Unlocks Level 60 facilities, Level 100 unit caps, and the Armory.',
+    costScrap: 5000,
+    costCredits: 2000,
+    researchTimeMs: 12 * 60 * 60 * 1000,
+    prerequisites: ['tech_tier_3']
   }
 ];
 

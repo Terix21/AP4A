@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Cpu, Users } from 'lucide-react';
+import { Cpu, Users, ArrowUpCircle } from 'lucide-react';
 import { FacilityManager, Survivor, FacilityType, Role } from '../systems/FacilityManager';
+import { useGameStore } from '../store/gameStore';
 
 export default function Facilities() {
   const [survivors, setSurvivors] = useState<Survivor[]>([]);
+  const facilityLevels = useGameStore(state => state.facilityLevels);
+  const unlockedTech = useGameStore(state => state.unlockedTech);
+  const upgradeFacility = useGameStore(state => state.upgradeFacility);
+  const scrap = useGameStore(state => state.scrap);
+  const addScrap = useGameStore(state => state.addScrap);
 
   useEffect(() => {
     setSurvivors(FacilityManager.getSurvivors());
@@ -17,6 +23,22 @@ export default function Facilities() {
   };
 
   const facilities: FacilityType[] = ['Synth-Farm', 'Scrap Smelter', 'Comms Relay'];
+
+  const getFacilityMaxLevel = () => {
+    if (unlockedTech.includes('tech_tier_4')) return 60;
+    if (unlockedTech.includes('tech_tier_3')) return 45;
+    if (unlockedTech.includes('tech_tier_2')) return 30;
+    return 15; // default for Tier 1
+  };
+
+  const handleUpgrade = (facility: FacilityType) => {
+    const currentLevel = facilityLevels[facility] || 1;
+    const cost = currentLevel * 100;
+    if (scrap >= cost && currentLevel < getFacilityMaxLevel()) {
+      addScrap(-cost);
+      upgradeFacility(facility);
+    }
+  };
 
   return (
     <div className="h-full flex flex-col space-y-6 pointer-events-auto">
@@ -38,8 +60,8 @@ export default function Facilities() {
             {survivors.map(survivor => (
               <div key={survivor.id} className="bg-gray-950/80 p-4 rounded-lg border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
                 <div>
-                  <div className="font-bold text-white">{survivor.name}</div>
-                  <div className="text-xs text-gray-400">Current Role: {survivor.role}</div>
+                  <div className="font-bold text-white">{survivor.name} <span className="text-emerald-500 text-xs ml-1">Lvl {survivor.level}</span></div>
+                  <div className="text-xs text-gray-400">Current Role: {survivor.role} | XP: {Math.floor(survivor.xp)}/{survivor.level * 100}</div>
                 </div>
                 <div className="flex space-x-2">
                   <select 
@@ -70,9 +92,23 @@ export default function Facilities() {
           <div className="space-y-4">
             {facilities.map(facility => {
               const assigned = survivors.filter(s => s.assignedFacility === facility);
+              const level = facilityLevels[facility] || 1;
+              const maxLevel = getFacilityMaxLevel();
+              const upgradeCost = level * 100;
+
               return (
                 <div key={facility} className="bg-gray-950/80 p-4 rounded-lg border border-cyan-900/50">
-                  <div className="font-bold text-cyan-300">{facility}</div>
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="font-bold text-cyan-300">{facility} <span className="text-xs text-emerald-500 border border-emerald-900 px-1 rounded ml-2">Lvl {level}</span></div>
+                    <button 
+                      onClick={() => handleUpgrade(facility)}
+                      disabled={level >= maxLevel || scrap < upgradeCost}
+                      className="text-xs bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-2 py-1 rounded border border-gray-700 transition-colors flex items-center"
+                    >
+                      <ArrowUpCircle className="w-3 h-3 mr-1" />
+                      {level >= maxLevel ? 'Max Level' : `Upgrade (${upgradeCost} Scrap)`}
+                    </button>
+                  </div>
                   <div className="text-sm text-gray-400 mt-2">
                     {assigned.length > 0 ? (
                       <ul className="list-disc pl-4 space-y-1">

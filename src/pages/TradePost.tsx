@@ -7,8 +7,18 @@ export default function TradePost() {
   const credits = useGameStore(state => state.credits);
   const scrap = useGameStore(state => state.scrap);
   const mats = useGameStore(state => state.buildingMats);
+  const activeSLAs = useGameStore(state => state.activeSLAs);
+  const addActiveSLA = useGameStore(state => state.addActiveSLA);
 
   const [tradeAmount, setTradeAmount] = useState<number>(100);
+
+  const signSLA = () => {
+    if (scrap >= 1000 && mats >= 2000) {
+      useGameStore.getState().addScrap(-1000);
+      useGameStore.getState().addMats(-2000);
+      addActiveSLA(50); // Generates 50 CR / hour
+    }
+  };
 
   return (
     <div className="h-full flex flex-col space-y-6 pointer-events-auto">
@@ -84,6 +94,27 @@ export default function TradePost() {
                 className="flex-1 bg-yellow-900/50 hover:bg-yellow-800/50 disabled:opacity-50 text-yellow-100 py-2 rounded text-sm transition-colors border border-yellow-700/50"
               >
                 Buy {tradeAmount} ( -{Math.ceil(tradeAmount/5)*2} CR )
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-gray-700/50">
+          <h3 className="text-lg font-semibold text-white mb-4">Corporate Contracts (SLAs)</h3>
+          <div className="bg-gray-950/80 p-5 rounded-lg border border-purple-900/50 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <div className="font-bold text-purple-300">Standard Resource SLA</div>
+              <div className="text-sm text-gray-400">Cost: 1,000 Scrap, 2,000 Mats</div>
+              <div className="text-xs text-gray-500 mt-1">Grants a permanent +50 CR / hour generation.</div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="text-sm font-bold text-white mb-2">Active Contracts: {activeSLAs}</div>
+              <button 
+                onClick={signSLA}
+                disabled={scrap < 1000 || mats < 2000}
+                className="bg-purple-900/50 hover:bg-purple-800/50 disabled:opacity-50 text-purple-100 py-2 px-6 rounded text-sm transition-colors border border-purple-700/50"
+              >
+                Sign Contract
               </button>
             </div>
           </div>

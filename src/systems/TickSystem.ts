@@ -1,4 +1,5 @@
 import { useGameStore } from '../store/gameStore';
+import { FacilityManager } from './FacilityManager';
 
 import { SecurityManager } from './SecurityManager';
 
@@ -11,12 +12,23 @@ export const TickSystem = {
     if (this.privateIntervalId !== null) return;
     
     this.privateIntervalId = window.setInterval(() => {
+      const state = useGameStore.getState();
+
+      // Time conversion: 28 in-game hours = 3600 real seconds
+      const hoursToAdvance = (this.TICK_INTERVAL_MS / 1000) * (28 / 3600);
+      const newTime = (state.gameTimeHours + hoursToAdvance) % 28;
+      state.setGameTimeHours(newTime);
+
       // Advance by TICK_INTERVAL_MS
-      useGameStore.getState().advanceTime(this.TICK_INTERVAL_MS);
+      state.advanceTime(this.TICK_INTERVAL_MS);
+      
+      // Grant XP to assigned units
+      FacilityManager.grantXP(5);
 
       // Threat logic
-      const state = useGameStore.getState();
-      const newThreat = state.threatLevel + SecurityManager.THREAT_INCREASE_PER_TICK;
+      const isNight = newTime >= 18 || newTime < 6;
+      const threatMultiplier = isNight ? 2.5 : 1.0;
+      const newThreat = state.threatLevel + (SecurityManager.THREAT_INCREASE_PER_TICK * threatMultiplier);
       
       if (newThreat >= 100) {
         useGameStore.getState().setThreatLevel(0);
