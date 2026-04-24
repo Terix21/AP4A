@@ -4,7 +4,7 @@ import { TickSystem } from './TickSystem';
 export interface GameSaveData {
   timestamp: number;
   checksum: string;
-  state: Pick<GameState, 'scrap' | 'buildingMats' | 'credits' | 'unlockedSectors' | 'unlockedTech' | 'playerCoordinates' | 'activeQueues' | 'threatLevel' | 'drones' | 'droneHealth' | 'scrapRatePerHour' | 'matsRatePerHour'>;
+  state: Pick<GameState, 'scrap' | 'buildingMats' | 'credits' | 'unlockedSectors' | 'unlockedTech' | 'playerCoordinates' | 'activeQueues' | 'threatLevel' | 'drones' | 'droneHealth' | 'scrapRatePerHour' | 'matsRatePerHour' | 'salvagedComponents' | 'systemOverloadRisk'>;
 }
 
 const STORAGE_KEY = 'neon_scrap_save_data';
@@ -33,6 +33,8 @@ export const SaveSystem = {
       threatLevel: 0,
       drones: 1,
       droneHealth: 100,
+      salvagedComponents: 0,
+      systemOverloadRisk: 0,
       scrapRatePerHour: 12,
       matsRatePerHour: -5,
     };
@@ -109,6 +111,8 @@ export const SaveSystem = {
       threatLevel: 0,
       drones: 1,
       droneHealth: 100,
+      salvagedComponents: 0,
+      systemOverloadRisk: 0,
       scrapRatePerHour: 12,
       matsRatePerHour: -5,
     };

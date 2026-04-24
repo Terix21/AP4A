@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, LogOut, Cpu, Coins, FlaskConical, Target } from 'lucide-react';
+import { LayoutDashboard, LogOut, Cpu, Coins, FlaskConical, Target, Plane } from 'lucide-react';
 import { useIdentity } from '../auth/IdentityProvider';
 
 export default function Sidebar() {
@@ -12,6 +12,7 @@ export default function Sidebar() {
     { name: 'Trade Post', path: '/trade', icon: Coins },
     { name: 'Tech Tree', path: '/tech', icon: FlaskConical },
     { name: 'Security', path: '/security', icon: Target },
+    { name: 'Operations', path: '/operations', icon: Plane },
   ];
 
   return (

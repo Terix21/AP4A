@@ -6,7 +6,7 @@ export const SecurityManager = {
 
   calculateDefenseLevel() {
     const state = useGameStore.getState();
-    const custodians = FacilityManager.getSurvivors().filter(s => s.role === 'Custodian').length;
+    const custodians = FacilityManager.getSurvivors().filter(s => s.role === 'Security Commander').length;
     
     // Each drone gives 10 defense. Each custodian gives 5 defense.
     let defense = (state.drones * 10) + (custodians * 5);

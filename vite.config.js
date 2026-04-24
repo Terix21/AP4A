@@ -8,9 +8,9 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
             manifest: {
-                name: 'Neon Scrap: Sector 7',
-                short_name: 'NeonScrap',
-                description: 'Isometric Scavenging Game',
+                name: 'Aether Protocol',
+                short_name: 'AetherProtocol',
+                description: 'Idle Management Simulation',
                 theme_color: '#030712',
                 background_color: '#030712',
                 display: 'standalone',
