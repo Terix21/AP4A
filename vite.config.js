@@ -27,15 +27,36 @@ export default defineConfig({
                         purpose: 'any maskable'
                     }
                 ]
+            },
+            workbox: {
+                globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+                runtimeCaching: [
+                    {
+                        urlPattern: /^https:\/\/raw\.githubusercontent\.com\/pmndrs\/drei-assets\/master\/hdri\/.*/i,
+                        handler: 'CacheFirst',
+                        options: {
+                            cacheName: 'drei-hdri-cache',
+                            expiration: {
+                                maxEntries: 10,
+                                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
+                            }
+                        }
+                    }
+                ]
             }
         })
     ],
     build: {
+        chunkSizeWarningLimit: 1500,
         rollupOptions: {
             output: {
                 manualChunks: {
                     vendor: ['react', 'react-dom', 'react-router-dom'],
-                    engine: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
+                    three: ['three'],
+                    r3f: ['@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
                     ui: ['lucide-react', 'zustand']
                 }
             }
