@@ -6,10 +6,22 @@ export const SecurityManager = {
 
   calculateDefenseLevel() {
     const state = useGameStore.getState();
-    const custodians = FacilityManager.getSurvivors().filter(s => s.role === 'Security Commander').length;
+    const custodians = FacilityManager.getSurvivors().filter(s => s.role === 'Security Commander');
     
-    // Each drone gives 10 defense. Each custodian gives 5 defense.
-    let defense = (state.drones * 10) + (custodians * 5);
+    // Each drone gives 10 defense. Each commander gives 5 base defense + 2 per level.
+    // Plus Hero Gear (e.g. Aetherium Pulse Rifle = 50 + kinetic barrier = level * 2).
+    let defense = (state.drones * 10);
+    
+    custodians.forEach(c => {
+      // Base stats
+      defense += 5 + (c.level * 2);
+      
+      // Hero Gear (Assumed always equipped if Tier 4 is unlocked)
+      if (state.unlockedTech.includes('tech_tier_4')) {
+        defense += 50; // Pulse Rifle
+        defense += (c.level * 2); // Kinetic Barrier
+      }
+    });
     
     // Tech boost
     if (state.unlockedTech.includes('tech_security_1')) {

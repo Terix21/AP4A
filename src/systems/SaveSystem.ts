@@ -4,7 +4,7 @@ import { TickSystem } from './TickSystem';
 export interface GameSaveData {
   timestamp: number;
   checksum: string;
-  state: Pick<GameState, 'scrap' | 'buildingMats' | 'credits' | 'unlockedSectors' | 'unlockedTech' | 'playerCoordinates' | 'activeQueues' | 'threatLevel' | 'drones' | 'droneHealth' | 'scrapRatePerHour' | 'matsRatePerHour' | 'salvagedComponents' | 'systemOverloadRisk'>;
+  state: Pick<GameState, 'scrap' | 'buildingMats' | 'credits' | 'unlockedSectors' | 'unlockedTech' | 'playerCoordinates' | 'activeQueues' | 'threatLevel' | 'drones' | 'droneHealth' | 'scrapRatePerHour' | 'matsRatePerHour' | 'salvagedComponents' | 'systemOverloadRisk' | 'gameTimeHours' | 'facilityLevels' | 'activeSLAs' | 'creditsPerHour'>;
 }
 
 const STORAGE_KEY = 'neon_scrap_save_data';
@@ -35,6 +35,10 @@ export const SaveSystem = {
       droneHealth: 100,
       salvagedComponents: 0,
       systemOverloadRisk: 0,
+      gameTimeHours: 6.0,
+      facilityLevels: { 'Synth-Farm': 1, 'Scrap Smelter': 1, 'Comms Relay': 1, 'Armory': 1 },
+      activeSLAs: 0,
+      creditsPerHour: 0,
       scrapRatePerHour: 12,
       matsRatePerHour: -5,
     };
@@ -113,6 +117,10 @@ export const SaveSystem = {
       droneHealth: 100,
       salvagedComponents: 0,
       systemOverloadRisk: 0,
+      gameTimeHours: 6.0,
+      facilityLevels: { 'Synth-Farm': 1, 'Scrap Smelter': 1, 'Comms Relay': 1, 'Armory': 1 },
+      activeSLAs: 0,
+      creditsPerHour: 0,
       scrapRatePerHour: 12,
       matsRatePerHour: -5,
     };

@@ -24,6 +24,11 @@ export interface GameState {
   salvagedComponents: number;
   systemOverloadRisk: number;
 
+  gameTimeHours: number;
+  facilityLevels: Record<string, number>;
+  activeSLAs: number; // For Trade Post
+  creditsPerHour: number;
+
   // Base rates per hour
   scrapRatePerHour: number;
   matsRatePerHour: number;
@@ -39,6 +44,9 @@ export interface GameState {
   setDrones: (count: number, health: number) => void;
   addSalvagedComponents: (amount: number) => void;
   setSystemOverloadRisk: (risk: number) => void;
+  setGameTimeHours: (hours: number) => void;
+  upgradeFacility: (facility: string) => void;
+  addActiveSLA: (creditsPerHourBonus: number) => void;
   
   queueTask: (task: QueuedTask) => void;
   advanceTime: (elapsedMs: number) => void;
@@ -59,6 +67,16 @@ export const useGameStore = create<GameState>((set) => ({
   salvagedComponents: 0,
   systemOverloadRisk: 0,
   
+  gameTimeHours: 6.0, // Start at 06:00
+  facilityLevels: {
+    'Synth-Farm': 1,
+    'Scrap Smelter': 1,
+    'Comms Relay': 1,
+    'Armory': 1
+  },
+  activeSLAs: 0,
+  creditsPerHour: 0,
+
   scrapRatePerHour: 12,
   matsRatePerHour: -5,
   
@@ -77,6 +95,12 @@ export const useGameStore = create<GameState>((set) => ({
   setDrones: (count, health) => set({ drones: Math.max(0, count), droneHealth: Math.max(0, Math.min(100, health)) }),
   addSalvagedComponents: (amount) => set((state) => ({ salvagedComponents: Math.max(0, state.salvagedComponents + amount) })),
   setSystemOverloadRisk: (risk) => set({ systemOverloadRisk: Math.max(0, Math.min(100, risk)) }),
+  
+  setGameTimeHours: (hours) => set({ gameTimeHours: hours % 28 }),
+  upgradeFacility: (facility) => set((state) => ({
+    facilityLevels: { ...state.facilityLevels, [facility]: (state.facilityLevels[facility] || 1) + 1 }
+  })),
+  addActiveSLA: (bonus) => set((state) => ({ activeSLAs: state.activeSLAs + 1, creditsPerHour: state.creditsPerHour + bonus })),
 
   queueTask: (task) => set((state) => ({
     activeQueues: [...state.activeQueues, task]
@@ -86,6 +110,7 @@ export const useGameStore = create<GameState>((set) => ({
     const hoursElapsed = elapsedMs / (1000 * 60 * 60);
     const newScrap = Math.max(0, state.scrap + (state.scrapRatePerHour * hoursElapsed));
     const newMats = Math.max(0, state.buildingMats + (state.matsRatePerHour * hoursElapsed));
+    const newCredits = Math.max(0, state.credits + (state.creditsPerHour * hoursElapsed));
 
     const finishedQueues = state.activeQueues.filter(q => q.timeRemainingMs - elapsedMs <= 0);
     const updatedQueues = state.activeQueues.map(q => ({
@@ -118,6 +143,7 @@ export const useGameStore = create<GameState>((set) => ({
     return {
       scrap: newScrap,
       buildingMats: newMats,
+      credits: newCredits,
       salvagedComponents: newSalvaged,
       activeQueues: updatedQueues,
       unlockedTech: newUnlockedTech,
