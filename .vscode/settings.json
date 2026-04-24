@@ -4,5 +4,9 @@
   "css.lint.unknownAtRules": "ignore",
   "tailwindCSS.includeLanguages": {
     "plaintext": "javascript"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "terix21",
+    "projectKey": "Terix21_Aether-Protocol"
   }
 }
