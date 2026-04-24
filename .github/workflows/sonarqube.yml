@@ -1,0 +1,98 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow helps you trigger a SonarQube analysis of your code and populates
+# GitHub Code Scanning alerts with the vulnerabilities found.
+# (this feature is available starting from SonarQube 9.7, Developer Edition and above)
+
+# 1. Make sure you add a valid GitHub configuration to your SonarQube (Administration > DevOps platforms > GitHub)
+
+# 2. Import your project on SonarQube
+#     * Add your repository as a new project by clicking "Create project" from your homepage.
+#
+# 3. Select GitHub Actions as your CI and follow the tutorial
+#     * a. Generate a new token and add it to your GitHub repository's secrets using the name SONAR_TOKEN
+#          (On SonarQube, click on your avatar on top-right > My account > Security or ask your administrator)
+#
+#     * b. Copy/paste your SonarQube host URL to your GitHub repository's secrets using the name SONAR_HOST_URL
+#
+#     * c. Copy/paste the project Key into the args parameter below
+#          (You'll find this information in SonarQube by following the tutorial or by clicking on Project Information at the top-right of your project's homepage)
+
+# Feel free to take a look at our documentation (https://docs.sonarqube.org/latest/analysis/github-integration/)
+# or reach out to our community forum if you need some help (https://community.sonarsource.com/c/sq/10)
+
+name: SonarQube analysis
+
+on:
+  push:
+    branches: ["Develop"]
+  pull_request:
+    branches: ["Develop"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read # allows SonarQube to decorate PRs with analysis results
+  security-events: write # allows publishing code scanning results
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  Analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          fetch-depth: 0 # full history required for blame/new-code detection
+
+      - name: Set up Java
+        id: setup-java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run test coverage
+        run: npm run test:coverage -- --coverage.reporter=lcov --coverage.reporter=text --coverage.reporter=json --coverage.reporter=html
+
+      - name: Analyze with SonarQube
+
+        # You can pin the exact commit or the version.
+        # uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Generate a token on SonarQube, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # add the URL of your instance to the secrets of this repo with the name SONAR_HOST_URL (Settings > Secrets > Actions > add new repository secret)
+          SONAR_SCANNER_JAVA_EXE_PATH: ${{ steps.setup-java.outputs.path }}/bin/java
+        with:
+          # Additional arguments for the SonarQube scanner
+          # Unique key of your project. You can find it in SonarQube > [my project] > Project Information (top-right menu)
+          # mandatory
+          args: >-
+            -Dsonar.projectKey=Terix21_Halyx
+            -Dsonar.organization=terix21
+            -Dsonar.projectName=Halyx
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=src/**/__tests__/**/*.test.js
+            -Dsonar.exclusions=**/__tests__/**,**/*.test.js,dist/**,coverage/**
+          # Optional examples:
+          # -Dsonar.projectBaseDir=.
+          # -Dsonar.verbose=true
