@@ -4,6 +4,7 @@ import UILayoutController from './components/layout/UILayoutController';
 import SectorDashboard from './pages/SectorDashboard';
 import Login from './pages/Login';
 import { IdentityProvider, useIdentity } from './components/auth/IdentityProvider';
+import { useGameStore } from './store/gameStore';
 
 import Facilities from './pages/Facilities';
 import TradePost from './pages/TradePost';
@@ -15,6 +16,16 @@ import Armory from './pages/Armory';
 function ProtectedLayout() {
   const { user } = useIdentity();
   const navigate = useNavigate();
+  
+  const navRequest = useGameStore(state => state.navigationRequest);
+  const clearNav = useGameStore(state => state.requestNavigation);
+
+  useEffect(() => {
+    if (navRequest) {
+      navigate(navRequest);
+      clearNav(null);
+    }
+  }, [navRequest, navigate, clearNav]);
 
   // Global Macros
   useEffect(() => {

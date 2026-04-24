@@ -20,10 +20,18 @@ export default function Drones() {
     });
   }, [dronesCount]);
 
+  const patrolWaypoint = useGameStore(state => state.patrolWaypoint);
+
   useFrame((state) => {
     if (groupRef.current) {
       groupRef.current.rotation.y += 0.005;
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.2;
+      
+      if (patrolWaypoint) {
+        const target = new THREE.Vector3(patrolWaypoint[0], 0, patrolWaypoint[2]);
+        groupRef.current.position.lerp(target, 0.02);
+      } else {
+        groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 2) * 0.2;
+      }
     }
     if (materialRef.current) {
       if (droneHealth < 50) {

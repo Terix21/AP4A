@@ -19,7 +19,12 @@ export interface GameState {
   
   threatLevel: number;
   drones: number;
-  droneHealth: number;
+  droneHealth: number; // 0-100
+  
+  cameraView: 'base' | 'world';
+  selectedEntityId: string | null;
+  patrolWaypoint: [number, number, number] | null;
+  navigationRequest: string | null;
 
   salvagedComponents: number;
   systemOverloadRisk: number;
@@ -45,6 +50,10 @@ export interface GameState {
   addSalvagedComponents: (amount: number) => void;
   setSystemOverloadRisk: (risk: number) => void;
   setGameTimeHours: (hours: number) => void;
+  setCameraView: (view: 'base' | 'world') => void;
+  setSelectedEntity: (id: string | null) => void;
+  setPatrolWaypoint: (waypoint: [number, number, number] | null) => void;
+  requestNavigation: (path: string | null) => void;
   upgradeFacility: (facility: string) => void;
   addActiveSLA: (creditsPerHourBonus: number) => void;
   
@@ -66,6 +75,11 @@ export const useGameStore = create<GameState>((set) => ({
   droneHealth: 100,
   salvagedComponents: 0,
   systemOverloadRisk: 0,
+  
+  cameraView: 'base',
+  selectedEntityId: null,
+  patrolWaypoint: null,
+  navigationRequest: null,
   
   gameTimeHours: 6.0, // Start at 06:00
   facilityLevels: {
@@ -97,6 +111,11 @@ export const useGameStore = create<GameState>((set) => ({
   setSystemOverloadRisk: (risk) => set({ systemOverloadRisk: Math.max(0, Math.min(100, risk)) }),
   
   setGameTimeHours: (hours) => set({ gameTimeHours: hours % 28 }),
+  setCameraView: (view) => set({ cameraView: view }),
+  setSelectedEntity: (id) => set({ selectedEntityId: id }),
+  setPatrolWaypoint: (waypoint) => set({ patrolWaypoint: waypoint }),
+  requestNavigation: (path) => set({ navigationRequest: path }),
+
   upgradeFacility: (facility) => set((state) => ({
     facilityLevels: { ...state.facilityLevels, [facility]: (state.facilityLevels[facility] || 1) + 1 }
   })),

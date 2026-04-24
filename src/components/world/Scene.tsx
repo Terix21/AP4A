@@ -5,11 +5,23 @@ import Drones from './Drones';
 
 export default function Scene() {
   const threatLevel = useGameStore(state => state.threatLevel);
+  const selectedEntityId = useGameStore(state => state.selectedEntityId);
+  const patrolWaypoint = useGameStore(state => state.patrolWaypoint);
 
   // Danger lighting based on threat level
   const ambientIntensity = threatLevel > 50 ? 0.1 : 0.2;
   const directionalColor = threatLevel > 50 ? "#ffaa88" : "#ffffff";
   const neonTrim = threatLevel > 50 ? "#ff0000" : "#00ffff";
+
+  const handleSelect = (e: any, id: string) => {
+    e.stopPropagation();
+    useGameStore.getState().setSelectedEntity(id);
+  };
+
+  const handleDoubleClick = (e: any, route: string) => {
+    e.stopPropagation();
+    useGameStore.getState().requestNavigation(route);
+  };
 
   return (
     <>
@@ -31,49 +43,108 @@ export default function Scene() {
       
       <Environment preset="night" background blur={0.8} />
 
+      <Environment preset="city" background blur={0.1} />
+
+      {/* Invisible Floor for Raycasting Waypoints */}
+      <mesh 
+        rotation={[-Math.PI / 2, 0, 0]} 
+        position={[0, -0.49, 0]} 
+        onContextMenu={(e) => {
+          e.stopPropagation();
+          useGameStore.getState().setPatrolWaypoint([e.point.x, e.point.y, e.point.z]);
+        }}
+      >
+        <planeGeometry args={[100, 100]} />
+        <meshBasicMaterial visible={false} />
+      </mesh>
+
+      {/* Patrol Waypoint Marker */}
+      {patrolWaypoint && (
+        <mesh position={patrolWaypoint} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.5, 0.7, 32]} />
+          <meshBasicMaterial color="#00ffcc" transparent opacity={0.5} side={THREE.DoubleSide} />
+        </mesh>
+      )}
+
+      {/* Selection Ring */}
+      {selectedEntityId && (
+        <mesh 
+          position={
+            selectedEntityId === 'Command Hub' ? [0, 0.1, 0] :
+            selectedEntityId === 'Scrap Smelter' ? [-5, 0.1, -2] :
+            selectedEntityId === 'Synth-Farm' ? [4, 0.1, -4] :
+            selectedEntityId === 'DataHub' ? [3, 0.1, 5] : [0, 0, 0]
+          } 
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <ringGeometry args={[2.5, 2.8, 32]} />
+          <meshBasicMaterial color="#00ffcc" side={THREE.DoubleSide} />
+        </mesh>
+      )}
+
       {/* Central Command Hub */}
-      <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
-        <cylinderGeometry args={[2, 2.5, 3, 6]} />
-        <meshStandardMaterial color="#222233" metalness={0.8} roughness={0.4} />
-      </mesh>
-      {/* Command Hub Neon Ring */}
-      <mesh position={[0, 3.1, 0]}>
-        <torusGeometry args={[1.5, 0.1, 16, 32]} />
-        <meshStandardMaterial color={neonTrim} emissive={neonTrim} emissiveIntensity={1} />
-      </mesh>
+      <group 
+        onClick={(e) => handleSelect(e, 'Command Hub')} 
+        onDoubleClick={(e) => handleDoubleClick(e, '/facilities')}
+      >
+        <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
+          <cylinderGeometry args={[2, 2.5, 3, 6]} />
+          <meshStandardMaterial color="#222233" metalness={0.9} roughness={0.1} />
+        </mesh>
+        {/* Command Hub Neon Ring */}
+        <mesh position={[0, 3.1, 0]}>
+          <torusGeometry args={[1.5, 0.1, 16, 32]} />
+          <meshStandardMaterial color={neonTrim} emissive={neonTrim} emissiveIntensity={1} />
+        </mesh>
+      </group>
 
       {/* The Smelter */}
-      <mesh castShadow receiveShadow position={[-5, 1, -2]}>
-        <boxGeometry args={[2, 2, 2]} />
-        <meshStandardMaterial color="#332222" metalness={0.6} roughness={0.7} />
-      </mesh>
-      {/* Smelter Emissive Accent */}
-      <mesh position={[-5, 2.1, -2]}>
-        <boxGeometry args={[1.5, 0.2, 1.5]} />
-        <meshStandardMaterial color="#ff5500" emissive="#ff5500" emissiveIntensity={2} />
-      </mesh>
+      <group 
+        onClick={(e) => handleSelect(e, 'Scrap Smelter')} 
+        onDoubleClick={(e) => handleDoubleClick(e, '/facilities')}
+      >
+        <mesh castShadow receiveShadow position={[-5, 1, -2]}>
+          <boxGeometry args={[2, 2, 2]} />
+          <meshStandardMaterial color="#332222" metalness={0.9} roughness={0.2} />
+        </mesh>
+        {/* Smelter Emissive Accent */}
+        <mesh position={[-5, 2.1, -2]}>
+          <boxGeometry args={[1.5, 0.2, 1.5]} />
+          <meshStandardMaterial color="#ff5500" emissive="#ff5500" emissiveIntensity={2} />
+        </mesh>
+      </group>
 
       {/* The SynthFarm */}
-      <mesh castShadow receiveShadow position={[4, 0.5, -4]}>
-        <cylinderGeometry args={[1.5, 1.5, 1, 16]} />
-        <meshStandardMaterial color="#113311" metalness={0.3} roughness={0.9} />
-      </mesh>
-      {/* SynthFarm Dome */}
-      <mesh position={[4, 1, -4]}>
-        <sphereGeometry args={[1.4, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color="#00ff55" emissive="#00ff55" emissiveIntensity={0.5} transparent opacity={0.6} />
-      </mesh>
+      <group 
+        onClick={(e) => handleSelect(e, 'Synth-Farm')} 
+        onDoubleClick={(e) => handleDoubleClick(e, '/facilities')}
+      >
+        <mesh castShadow receiveShadow position={[4, 0.5, -4]}>
+          <cylinderGeometry args={[1.5, 1.5, 1, 16]} />
+          <meshStandardMaterial color="#113311" metalness={0.85} roughness={0.15} />
+        </mesh>
+        {/* SynthFarm Dome */}
+        <mesh position={[4, 1, -4]}>
+          <sphereGeometry args={[1.4, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#00ff55" emissive="#00ff55" emissiveIntensity={0.5} transparent opacity={0.6} />
+        </mesh>
+      </group>
 
       {/* The DataHub */}
-      <mesh castShadow receiveShadow position={[3, 2, 5]}>
-        <boxGeometry args={[1.5, 4, 1.5]} />
-        <meshStandardMaterial color="#111122" metalness={0.9} roughness={0.2} />
-      </mesh>
-      {/* DataHub Arrays */}
-      <mesh position={[3, 4.1, 5]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.5, 1.5]} />
-        <meshStandardMaterial color="#0088ff" emissive="#0088ff" emissiveIntensity={1.5} side={THREE.DoubleSide} />
-      </mesh>
+      <group 
+        onClick={(e) => handleSelect(e, 'DataHub')} 
+        onDoubleClick={(e) => handleDoubleClick(e, '/tech')}
+      >
+        <mesh castShadow receiveShadow position={[3, 2, 5]}>
+          <boxGeometry args={[1.5, 4, 1.5]} />
+          <meshStandardMaterial color="#111122" metalness={1.0} roughness={0.1} />
+        </mesh>
+        {/* DataHub Arrays */}
+        <mesh position={[3, 4.1, 5]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[1.5, 1.5]} />
+          <meshStandardMaterial color="#0088ff" emissive="#0088ff" emissiveIntensity={1.5} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
 
       {/* Platform Base (Stylized metallic Sector Platform) */}
       <mesh receiveShadow position={[0, -0.5, 0]}>
