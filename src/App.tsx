@@ -8,6 +8,7 @@ import Facilities from './pages/Facilities';
 import TradePost from './pages/TradePost';
 import TechTree from './pages/TechTree';
 import Security from './pages/Security';
+import Operations from './pages/Operations';
 
 function ProtectedLayout() {
   const { user } = useIdentity();
@@ -36,6 +37,7 @@ export default function App() {
             <Route path="trade" element={<TradePost />} />
             <Route path="tech" element={<TechTree />} />
             <Route path="security" element={<Security />} />
+            <Route path="operations" element={<Operations />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

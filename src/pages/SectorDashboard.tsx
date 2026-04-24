@@ -4,6 +4,7 @@ import { useGameStore, GameState } from '../store/gameStore';
 export default function SectorDashboard() {
   const scrap = useGameStore((state: GameState) => state.scrap);
   const buildingMats = useGameStore((state: GameState) => state.buildingMats);
+  const systemOverloadRisk = useGameStore((state: GameState) => state.systemOverloadRisk);
 
   return (
     <div className="h-full flex flex-col space-y-6">
@@ -28,11 +29,11 @@ export default function SectorDashboard() {
           </div>
           <div className="p-4 sm:p-6 flex-1 space-y-4">
             <div className="bg-gray-950/80 p-4 rounded-lg border border-gray-800/50">
-              <div className="text-sm text-gray-400 mb-1">Scrap (Data Hub)</div>
+              <div className="text-sm text-gray-400 mb-1">Scrap (Comms Relay)</div>
               <div className="text-2xl font-bold text-white">{scrap.toLocaleString()} <span className="text-sm font-normal text-green-400">+12/hr</span></div>
             </div>
             <div className="bg-gray-950/80 p-4 rounded-lg border border-gray-800/50">
-              <div className="text-sm text-gray-400 mb-1">Building Mats (Smelter)</div>
+              <div className="text-sm text-gray-400 mb-1">Building Mats (Scrap Smelter)</div>
               <div className="text-2xl font-bold text-white">{buildingMats.toLocaleString()} <span className="text-sm font-normal text-yellow-400">-5/hr</span></div>
             </div>
           </div>
@@ -47,14 +48,14 @@ export default function SectorDashboard() {
           </div>
           <div className="p-4 sm:p-6 flex-1">
             <ul className="divide-y divide-gray-800/50">
-              {['Steward', 'Processor', 'Custodian', 'Owner'].map((role, idx) => (
+              {['Base Logistician', 'Power Systems Engineer', 'Base Fabricator', 'Security Commander'].map((role, idx) => (
                 <li key={role} className="py-3 flex justify-between items-center">
                   <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full mr-3 ${idx === 0 ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' : 'bg-gray-600'}`}></div>
+                    <div className={`w-2 h-2 rounded-full mr-3 ${idx < 2 ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' : 'bg-gray-600'}`}></div>
                     <span className="text-sm font-medium text-gray-200">{role}</span>
                   </div>
                   <span className="inline-flex items-center rounded-md bg-gray-800/80 px-2 py-1 text-xs font-medium text-gray-300 ring-1 ring-inset ring-gray-600/50">
-                    {idx === 0 ? 'Assigned' : 'Idle'}
+                    {idx < 2 ? 'Assigned' : 'Idle'}
                   </span>
                 </li>
               ))}
@@ -71,14 +72,14 @@ export default function SectorDashboard() {
           </div>
           <div className="p-4 sm:p-6 flex-1 space-y-4">
             <div className="relative pl-8 pb-4 border-l border-gray-800/50">
-              <div className="absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_5px_#eab308]"></div>
-              <p className="text-sm text-yellow-300 font-medium drop-shadow-sm">Thermal Shutdown Risk</p>
-              <p className="text-xs text-gray-400 mt-1">Smelter running at 85% capacity.</p>
+              <div className={`absolute left-[-5px] top-1 w-2 h-2 rounded-full ${systemOverloadRisk > 20 ? 'bg-yellow-500 shadow-[0_0_5px_#eab308]' : 'bg-green-500 shadow-[0_0_5px_#22c55e]'}`}></div>
+              <p className={`text-sm font-medium drop-shadow-sm ${systemOverloadRisk > 20 ? 'text-yellow-300' : 'text-green-300'}`}>System Overload Risk: {systemOverloadRisk}%</p>
+              <p className="text-xs text-gray-400 mt-1">Mitigated by Power Systems Engineers.</p>
             </div>
             <div className="relative pl-8 border-l border-gray-800/50">
               <div className="absolute left-[-5px] top-1 w-2 h-2 rounded-full bg-red-500 shadow-[0_0_5px_#ef4444] animate-pulse"></div>
-              <p className="text-sm text-red-300 font-medium drop-shadow-sm">Memory Leak Detected</p>
-              <p className="text-xs text-gray-400 mt-1">Data Hub requires Custodian intervention.</p>
+              <p className="text-sm text-red-300 font-medium drop-shadow-sm">Contamination Detected</p>
+              <p className="text-xs text-gray-400 mt-1">Scavenge drones require maintenance.</p>
             </div>
           </div>
         </div>

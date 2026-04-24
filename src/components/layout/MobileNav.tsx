@@ -12,6 +12,7 @@ export default function MobileNav({ isOpen, toggle }: MobileNavProps) {
     { name: 'Facilities', path: '/facilities' },
     { name: 'Trade', path: '/trade' },
     { name: 'Tech', path: '/tech' },
+    { name: 'Operations', path: '/operations' },
   ];
 
   return (

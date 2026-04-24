@@ -16,7 +16,7 @@ export default function Facilities() {
     setSurvivors(FacilityManager.getSurvivors());
   };
 
-  const facilities: FacilityType[] = ['SynthFarm', 'Smelter', 'DataHub'];
+  const facilities: FacilityType[] = ['Synth-Farm', 'Scrap Smelter', 'Comms Relay'];
 
   return (
     <div className="h-full flex flex-col space-y-6 pointer-events-auto">
@@ -55,7 +55,7 @@ export default function Facilities() {
                     onChange={(e) => handleAssign(survivor.id, survivor.assignedFacility || '', e.target.value)}
                     className="bg-gray-800 text-xs text-white border border-gray-600 rounded p-1"
                   >
-                    {['Owner', 'Steward', 'Processor', 'Custodian', 'Unassigned'].map(r => <option key={r} value={r}>{r}</option>)}
+                    {['Base Logistician', 'Base Fabricator', 'Security Commander', 'Trade & Diplomat Agent', 'Drone Engineer/Commander', 'Power Systems Engineer', 'Fabrication Specialist', 'Unassigned'].map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
               </div>
