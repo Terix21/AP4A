@@ -2,7 +2,63 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@capacitor/android" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@capacitor/app" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@capacitor/cli" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@capacitor/local-notifications" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@capacitor/preferences" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@ionic" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@isaacs/fs-minipass" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@types/fs-extra" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@types/node" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@types/slice-ansi" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/@xmldom" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/ansi-regex" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/ansi-styles" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/astral-regex" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/big-integer" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/bplist-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/buffer-crc32" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/chownr" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/color-convert" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/color-name" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/define-lazy-prop" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/elementtree" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/emoji-regex" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/env-paths" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/fd-slicer" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/inherits" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/ini" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/is-docker" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/is-fullwidth-code-point" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/is-wsl" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/kleur" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/minizlib" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/native-run" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/open" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/pend" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/plist" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/prompts" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/readable-stream" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/rimraf" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/sax" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/sisteransi" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/slice-ansi" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/split2" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/string-width" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/string_decoder" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/strip-ansi" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/tar" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/through2" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/tree-kill" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/undici-types" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/untildify" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/wrap-ansi" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/xml2js" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/xmlbuilder" />
+      <excludeFolder url="file://$MODULE_DIR$/node_modules/yauzl" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

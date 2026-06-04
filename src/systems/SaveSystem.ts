@@ -103,7 +103,7 @@ export const SaveSystem = {
     await this.saveToLocal(useGameStore.getState());
   },
 
-  getDefaultState() {
+  getDefaultState(): GameSaveData['state'] {
     return {
       scrap: 450,
       buildingMats: 1200,

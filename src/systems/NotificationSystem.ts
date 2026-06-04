@@ -46,7 +46,7 @@ export const NotificationSystem = {
   },
 
   // Helper to turn string taskId into numeric ID for Android
-  private generateHashId(str: string): number {
+  generateHashId(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = (str.charCodeAt(i) + (hash << 5) - hash) & 0x7FFFFFFF;

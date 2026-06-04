@@ -11,8 +11,6 @@ import { X, Cpu } from 'lucide-react';
 import { App } from '@capacitor/app';
 import { HapticFeedback } from '../../systems/HapticFeedback';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import { NavigationBar } from '@awesome-cordova-plugins/navigation-bar'; // Or use a direct Capacitor plugin if preferred, but usually requires additional install.
-// Note: For standard Capacitor we usually use CSS + StatusBar.
 
 interface UILayoutControllerProps {
   children: ReactNode;
@@ -31,7 +29,7 @@ export default function UILayoutController({ children }: UILayoutControllerProps
   useEffect(() => {
     const handleBackButton = async () => {
       try {
-        await App.addListener('backButton', ({ canGoBack }) => {
+        await App.addListener('backButton', () => {
           if (mobileMenuOpen) {
             setMobileMenuOpen(false);
           } else if (selectedEntityId) {
