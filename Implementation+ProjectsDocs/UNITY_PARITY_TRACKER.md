@@ -1,8 +1,8 @@
 # Aether Protocol — Unity & Android (Capacitor) Parity Tracker
 
 This document tracks implementation, feature, and architectural parity between the dual-track platforms:
-1. **Unity Version (C#)**: A native rebuild targeting desktop and consoles.
-2. **Android Version (Capacitor)**: A hybrid webview application compiled from the React/Three.js web codebase.
+1. **Unity Version (C#)**: A native rebuild targeting desktop and consoles, hosted in its own separate repository (e.g. `AetherProtocol-Unity`).
+2. **Android Version (Capacitor)**: A hybrid mobile application compiled from the React/Three.js codebase, hosted in this repository (AP4A).
 
 ---
 

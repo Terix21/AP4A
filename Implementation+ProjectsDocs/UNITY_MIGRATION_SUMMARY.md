@@ -1,6 +1,6 @@
-# Aether Protocol — Unity Migration Summary (Quick Reference)
+# Aether Protocol — Unity Migration Summary & Parity Reference
 
-## 📊 Repository Status: ✅ READY FOR PHASE 1
+## 📊 Repository Status: Android Version (AP4A) / Unity Parallel Reference
 
 ### ✅ Bootstrap Complete
 All required infrastructure files exist and are configured:
@@ -16,7 +16,7 @@ All required infrastructure files exist and are configured:
 | Core Systems | 10 | ✅ All present (Tick, Save, Pathfinding, Facilities, Drones, Trade, Tech, Security, Scavenge, Identity) |
 | UI Components | 8+ | ✅ Layout, Sidebar, MobileNav, Effects, Scene, Drones, GameCanvas, IdentityProvider |
 | Zustand Store | 1 | ✅ Centralized gameStore.ts |
-| **NO Assets/ or ProjectSettings/ yet** | — | 🎯 Ready for Unity init |
+| **NO Assets/ or ProjectSettings/ in this repo** | — | 🎯 Managed in separate parallel repository |
 
 ### 🏗️ Current Architecture
 ```
@@ -297,20 +297,17 @@ Tailwind styling               →    UGUI Canvas + Layout Groups
 
 ---
 
-## 📞 Questions & Clarifications Needed
+## 📞 Confirmed Repo Setup
 
-Before starting Phase 1, please confirm:
+The repository architecture has been confirmed as follows:
 
-1. **Unity Project Location**: Same repo directory or parallel? (e.g., `C:\Users\PPL\source\repos\Games\AetherProtocol-Unity\`)
-2. **Timeline Adjustment**: Weeks 1-10 feasible, or need acceleration? Any constraints?
-3. **Art Assets**: Do you have the 7 `.glb` models ready, or should Phase 3 source them?
-4. **Audio Assets**: Have music + SFX clips, or generate procedurally?
-5. **Web Sunset Plan**: Keep Electron/React version after Unity launch, or sunset it?
-6. **Target Platforms**: Windows + macOS + Linux, or add mobile (iOS/Android) later?
+1. **Unity Project Location**: Separate parallel repository (`AetherProtocol-Unity`), leaving this repository (`AP4A`) focused solely on the Android/Capacitor version.
+2. **Coordinated Parity**: Both codebases are maintained in parallel to ensure feature and gameplay mechanics match.
+3. **Target Platforms**: Android (via Capacitor) in this repository; Windows, macOS, and Linux in the Unity repository.
 
 ---
 
-**Document Version**: 1.0  
+**Document Version**: 1.1  
 **Generated**: 2026-04-27  
-**Status**: ✅ Ready for Phase 1 Kickoff
+**Status**: ✅ Parallel Repo Setup Confirmed
 

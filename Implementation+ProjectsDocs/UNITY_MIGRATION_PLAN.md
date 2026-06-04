@@ -1,14 +1,14 @@
-# Aether Protocol — Unity Migration Plan
+# Aether Protocol — Unity Migration Plan (Reference Design)
 
-> **Status**: Planning  
+> **Status**: Reference Design  
 > **Target**: Unity 2022.3+ (LTS) with Universal Render Pipeline (URP)  
-> **Branch**: `unity-migration` (to be created)
+> **Repository Location**: Separate Parallel Repository (`AetherProtocol-Unity`)  
 
 ---
 
 ## Executive Summary
 
-Aether Protocol is currently built as a **web-based Electron + React + Three.js** application. This plan outlines the refactoring path to port the entire game to **Unity (C#)** while preserving the core gameplay loop, visual identity, and data systems.
+Aether Protocol is built as a **hybrid Android app (React + Vite + Capacitor)** in this repository (`AP4A`). This plan outlines the architecture reference to port or parallel-develop the game in **Unity (C#)** in its own repository, preserving the core gameplay loop, visual identity, and data systems.
 
 ### Why Migrate to Unity?
 
@@ -491,4 +491,4 @@ AetherProtocol-Unity/
 ---
 
 *Generated: 2026-04-27*  
-*Plan Version: 1.0*
+*Plan Version: 1.1 (Parallel Repo Reference)*

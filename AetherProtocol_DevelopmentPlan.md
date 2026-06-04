@@ -1,7 +1,7 @@
 
 # Aether Protocol — Phased Development Plan
 
-> **Note:** This document describes the original phased development plan for the Electron/React/Three.js version. The project is now being migrated to Unity (C#). For current architecture and implementation details, see [UNITY_MIGRATION_PLAN.md](Implementation+ProjectsDocs/UNITY_MIGRATION_PLAN.md).
+> **Note:** This document describes the original phased development plan for the React/Three.js hybrid mobile codebase (which is packaged via Capacitor for Android in this repository). The Unity (C#) version is developed as a separate, parallel project in its own repository. For details on how systems and features match between platforms, see [UNITY_PARITY_TRACKER.md](Implementation+ProjectsDocs/UNITY_PARITY_TRACKER.md).
 
 This document outlines the phased development plan for rebuilding the project from its previous iteration ("Neon Scrap") into **Aether Protocol**, an Idle Management Simulation. 
 

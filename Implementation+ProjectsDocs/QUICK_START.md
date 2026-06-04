@@ -1,6 +1,8 @@
-# 🎮 Aether Protocol — Quick Start to Unity Migration
+# 🎮 Aether Protocol — Quick Start to Unity Migration (Reference Guide)
 
-**Generated**: 2026-04-27 | **Status**: ✅ Ready for Phase 1 Execution
+**Generated**: 2026-04-27 | **Status**: ✅ Parallel Repo Setup Confirmed
+
+> **Note:** This repository (`AP4A`) contains the Android/Capacitor version of Aether Protocol. The Unity migration is developed as a separate, parallel project in its own repository (`AetherProtocol-Unity`). These migration guides are maintained here as architectural references and parity baselines.
 
 ---
 
@@ -224,17 +226,10 @@ All in: `Implementation+ProjectsDocs/`
 - **NO**: Defer audio to Phase 5, use silence placeholder (low impact)
 
 ### Decision 3: Repository
-**Question**: Separate Git repo or branch off Phase-7?
-- **SEPARATE**: Cleaner, recommended
-  - `AetherProtocol-Unity` repo created independently
-  - Independent CI/CD pipeline
-  - Web version stays unchanged
-- **BRANCH**: In same repo
-  - `feature/unity-migration` branch
-  - Single Git history
-  - Larger repo, more complex build
-
-**Recommendation**: SEPARATE repo (cleaner deployments)
+**Decision**: SEPARATE repository (Confirmed)
+- The Unity version is developed in a separate parallel repository (`AetherProtocol-Unity`).
+- This repository (`AP4A`) is the Android version.
+- The migration checklist and timeline below are to be executed within that separate Unity repository, using the React codebase in this repository as the reference implementation.
 
 ---
 

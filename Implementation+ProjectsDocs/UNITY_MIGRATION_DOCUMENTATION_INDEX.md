@@ -1,14 +1,14 @@
 # Aether Protocol — Unity Migration Documentation Index
 
 **Generated**: 2026-04-27  
-**Repository**: `https://github.com/Terix21/Aether-Protocol` (Phase-7)  
-**Workspace**: `C:\Users\PPL\source\repos\Games\Aether Protocol\`
+**Repository**: `https://github.com/Terix21/AP4A` (Android Version)  
+**Workspace**: `C:\Users\PPL\source\repos\Games\AP4A\`
 
 ---
 
 ## 📚 Complete Documentation Suite
 
-This directory (`Implementation+ProjectsDocs/`) contains 6 comprehensive documents covering the Aether Protocol migration from Electron/React to Unity 2022.3 LTS.
+This directory (`Implementation+ProjectsDocs/`) contains comprehensive planning documents for coordinating the parallel development and migration of the Aether Protocol codebase from the hybrid Android/React stack to Unity 2022.3 LTS (developed in the separate parallel repository `AetherProtocol-Unity`). These files serve as architecture blueprints and cross-platform parity targets.
 
 ### Quick Navigation
 

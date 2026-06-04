@@ -1,6 +1,7 @@
 <!--
-	NOTE: This document describes the game concept and world for Aether Protocol as originally designed for the Electron/React/Three.js stack.
-	The project is now being migrated to Unity (C#). For up-to-date architecture and implementation, see UNITY_MIGRATION_PLAN.md.
+	NOTE: This document describes the game concept and world for Aether Protocol, which is shared between the Android (Capacitor/React) and Unity (C#) versions.
+	The Unity version is a separate parallel project managed in its own repository, while this repository targets the Android version (AP4A).
+	For cross-platform architecture and parity mapping, see Implementation+ProjectsDocs/UNITY_PARITY_TRACKER.md.
 -->
 Aether Protocol — Concept Document
 Core Concept

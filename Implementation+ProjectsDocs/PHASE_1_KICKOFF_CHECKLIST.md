@@ -1,5 +1,7 @@
 # Phase 1 Kickoff Checklist: Foundation & Architecture
 
+> **Note:** This checklist is executed within the separate parallel repository `AetherProtocol-Unity`. This file in the `AP4A` repository serves as a reference.
+
 **Start Date**: [TO BE CONFIRMED]  
 **Target Completion**: 2 weeks  
 **Effort**: ~40 hours  
@@ -13,9 +15,9 @@
 ### Environment Setup
 - [ ] Unity 2022.3+ LTS downloaded and installed
 - [ ] Unity Editor tested and functional
-- [ ] Git repository prepared (either branch or new repo)
+- [ ] Separate Git repository prepared (`AetherProtocol-Unity`)
 - [ ] `.gitignore` configured for Unity (`Library/`, `Temp/`, `Builds/`, `*.csproj`, `*.sln`)
-- [ ] Project directory created and ready: `C:\Users\PPL\source\repos\Games\AetherProtocol-Unity\` (or parallel location)
+- [ ] Project directory created and ready: `C:\Users\PPL\source\repos\Games\AetherProtocol-Unity\` (separate parallel location)
 
 ### Confirmations
 - [ ] Team assignment confirmed

@@ -1,10 +1,11 @@
-# Aether Protocol — Unity Migration Review (2026-04-27)
+# Aether Protocol — Unity Migration Review & Reference Roadmap (2026-04-27)
 
-> **Status**: Ready for Phase 1 Execution  
-> **Current Build**: Web (Electron + React + Three.js + Vite)  
+> **Status**: Reference Roadmap for Unity  
+> **Current Build**: Android / Hybrid Web Mobile (React + Three.js + Vite + Capacitor)  
 > **Target**: Unity 2022.3+ LTS with Universal Render Pipeline  
-> **Repository**: `https://github.com/Terix21/Aether-Protocol` (Branch: `Phase-7`)  
-> **Workspace**: `C:\Users\PPL\source\repos\Games\Aether Protocol\`
+> **Repository**: `https://github.com/Terix21/AP4A` (Android Version)  
+> **Workspace**: `C:\Users\PPL\source\repos\Games\AP4A\`  
+> **Note**: The parallel Unity codebase is hosted in the separate repository `AetherProtocol-Unity`. This document guides system and feature design to ensure cross-platform parity.
 
 ---
 
