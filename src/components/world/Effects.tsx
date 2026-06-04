@@ -1,6 +1,11 @@
 import { EffectComposer, Bloom, DepthOfField, Vignette } from '@react-three/postprocessing';
+import { useGameStore } from '../../store/gameStore';
 
 export default function Effects() {
+  const performanceProfile = useGameStore(state => state.performanceProfile);
+
+  if (performanceProfile === 'low') return null;
+
   return (
     <EffectComposer>
       <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} />

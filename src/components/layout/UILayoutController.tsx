@@ -1,25 +1,53 @@
 import { ReactNode, useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import MobileNav from './MobileNav';
 import GameCanvas from '../world/GameCanvas';
 import { SaveSystem } from '../../systems/SaveSystem';
 import { TickSystem } from '../../systems/TickSystem';
+import { NotificationSystem } from '../../systems/NotificationSystem';
 import { useGameStore } from '../../store/gameStore';
 import { X, Cpu } from 'lucide-react';
 import { App } from '@capacitor/app';
 import { HapticFeedback } from '../../systems/HapticFeedback';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { NavigationBar } from '@awesome-cordova-plugins/navigation-bar'; // Or use a direct Capacitor plugin if preferred, but usually requires additional install.
+// Note: For standard Capacitor we usually use CSS + StatusBar.
 
 interface UILayoutControllerProps {
   children: ReactNode;
 }
 
 export default function UILayoutController({ children }: UILayoutControllerProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const selectedEntityId = useGameStore(state => state.selectedEntityId);
   const setSelectedEntity = useGameStore(state => state.setSelectedEntity);
   const activeQueues = useGameStore(state => state.activeQueues);
   const [prevQueuesLength, setPrevQueuesLength] = useState(activeQueues.length);
+
+  // Hardware Back Button Listener
+  useEffect(() => {
+    const handleBackButton = async () => {
+      try {
+        await App.addListener('backButton', ({ canGoBack }) => {
+          if (mobileMenuOpen) {
+            setMobileMenuOpen(false);
+          } else if (selectedEntityId) {
+            setSelectedEntity(null);
+          } else if (location.pathname !== '/dashboard') {
+            navigate('/dashboard');
+          } else {
+            App.exitApp();
+          }
+        });
+      } catch (e) {
+        console.warn('[UILayoutController] Back button listener failed (browser mode)', e);
+      }
+    };
+    handleBackButton();
+  }, [mobileMenuOpen, selectedEntityId, location.pathname, navigate, setSelectedEntity]);
 
   // Task Completion Haptics & Autosave
   useEffect(() => {
@@ -34,6 +62,7 @@ export default function UILayoutController({ children }: UILayoutControllerProps
   useEffect(() => {
     SaveSystem.loadOrFailover().then(() => {
       TickSystem.startEngine();
+      NotificationSystem.requestPermissions();
     });
 
     // Native App pause / background autosave trigger
@@ -41,8 +70,12 @@ export default function UILayoutController({ children }: UILayoutControllerProps
       try {
         const handler = await App.addListener('appStateChange', ({ isActive }) => {
           if (!isActive) {
-            console.log('[App] Application minimized/paused. Triggering autosave.');
+            console.log('[App] Application minimized/paused. Triggering autosave and stopping engine.');
             SaveSystem.saveToLocal(useGameStore.getState());
+            TickSystem.stopEngine();
+          } else {
+            console.log('[App] Application resumed. Starting engine.');
+            TickSystem.startEngine();
           }
         });
         return handler;

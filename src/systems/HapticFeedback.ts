@@ -5,8 +5,23 @@ export const HapticFeedback = {
     try {
       await Haptics.impact({ style: ImpactStyle.Light });
     } catch (e) {
-      // Graceful fallback for non-native web environments
-      console.log('[HapticFeedback] Light selection impact triggered (stubbed on browser)');
+      console.log('[HapticFeedback] Light selection impact triggered');
+    }
+  },
+
+  async triggerImpact() {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Medium });
+    } catch (e) {
+      console.log('[HapticFeedback] Medium impact triggered');
+    }
+  },
+
+  async triggerHeavyImpact() {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Heavy });
+    } catch (e) {
+      console.log('[HapticFeedback] Heavy impact triggered');
     }
   },
 
@@ -14,7 +29,7 @@ export const HapticFeedback = {
     try {
       await Haptics.notification({ type: NotificationType.Success });
     } catch (e) {
-      console.log('[HapticFeedback] Success notification haptic triggered (stubbed on browser)');
+      console.log('[HapticFeedback] Success notification haptic triggered');
     }
   },
 
@@ -22,7 +37,15 @@ export const HapticFeedback = {
     try {
       await Haptics.notification({ type: NotificationType.Warning });
     } catch (e) {
-      console.log('[HapticFeedback] Warning notification haptic triggered (stubbed on browser)');
+      console.log('[HapticFeedback] Warning notification haptic triggered');
+    }
+  },
+
+  async triggerError() {
+    try {
+      await Haptics.notification({ type: NotificationType.Error });
+    } catch (e) {
+      console.log('[HapticFeedback] Error notification haptic triggered');
     }
   }
 };

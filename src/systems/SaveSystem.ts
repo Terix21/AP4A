@@ -1,13 +1,14 @@
 import { useGameStore, GameState } from '../store/gameStore';
 import { TickSystem } from './TickSystem';
+import { Preferences } from '@capacitor/preferences';
 
 export interface GameSaveData {
   timestamp: number;
   checksum: string;
-  state: Pick<GameState, 'scrap' | 'buildingMats' | 'credits' | 'unlockedSectors' | 'unlockedTech' | 'playerCoordinates' | 'activeQueues' | 'threatLevel' | 'drones' | 'droneHealth' | 'scrapRatePerHour' | 'matsRatePerHour' | 'salvagedComponents' | 'systemOverloadRisk' | 'gameTimeHours' | 'facilityLevels' | 'activeSLAs' | 'creditsPerHour'>;
+  state: Pick<GameState, 'scrap' | 'buildingMats' | 'credits' | 'unlockedSectors' | 'unlockedTech' | 'playerCoordinates' | 'activeQueues' | 'threatLevel' | 'drones' | 'droneHealth' | 'scrapRatePerHour' | 'matsRatePerHour' | 'salvagedComponents' | 'systemOverloadRisk' | 'gameTimeHours' | 'facilityLevels' | 'activeSLAs' | 'creditsPerHour' | 'survivors'>;
 }
 
-const STORAGE_KEY = 'neon_scrap_save_data';
+const STORAGE_KEY = 'aether_protocol_save_data';
 
 function generateChecksum(data: string): string {
   let hash = 0;
@@ -22,26 +23,7 @@ function generateChecksum(data: string): string {
 export const SaveSystem = {
   async fetchFromCloud(): Promise<GameSaveData> {
     await new Promise((resolve) => setTimeout(resolve, 600)); 
-    const state = {
-      scrap: 450,
-      buildingMats: 1200,
-      credits: 100,
-      unlockedSectors: ['sector-7'],
-      unlockedTech: [],
-      playerCoordinates: [0, 0, 0] as [number, number, number],
-      activeQueues: [],
-      threatLevel: 0,
-      drones: 1,
-      droneHealth: 100,
-      salvagedComponents: 0,
-      systemOverloadRisk: 0,
-      gameTimeHours: 6.0,
-      facilityLevels: { 'Synth-Farm': 1, 'Scrap Smelter': 1, 'Comms Relay': 1, 'Armory': 1 },
-      activeSLAs: 0,
-      creditsPerHour: 0,
-      scrapRatePerHour: 12,
-      matsRatePerHour: -5,
-    };
+    const state = this.getDefaultState();
     const data = { timestamp: Date.now(), state };
     return { ...data, checksum: generateChecksum(JSON.stringify(data)) };
   },
@@ -52,18 +34,36 @@ export const SaveSystem = {
     console.log(`[SaveSystem] Synced to cloud: ${payload}`);
   },
 
-  saveToLocal(state: GameSaveData['state']): GameSaveData {
+  async saveToLocal(state: GameSaveData['state']): Promise<GameSaveData> {
     const timestamp = Date.now();
     const saveState = { timestamp, state };
     const checksum = generateChecksum(JSON.stringify(saveState));
     
     const fullSave: GameSaveData = { ...saveState, checksum };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(fullSave));
+
+    try {
+      await Preferences.set({
+        key: STORAGE_KEY,
+        value: JSON.stringify(fullSave),
+      });
+    } catch (e) {
+      console.error('[SaveSystem] Preferences.set failed, falling back to localStorage', e);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fullSave));
+    }
+
     return fullSave;
   },
 
   async loadOrFailover(): Promise<void> {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw: string | null = null;
+    try {
+      const { value } = await Preferences.get({ key: STORAGE_KEY });
+      raw = value;
+    } catch (e) {
+      console.warn('[SaveSystem] Preferences.get failed, checking localStorage', e);
+      raw = localStorage.getItem(STORAGE_KEY);
+    }
+
     let finalData: GameSaveData;
     
     if (raw) {
@@ -100,7 +100,7 @@ export const SaveSystem = {
     const elapsedMs = Date.now() - finalData.timestamp;
     TickSystem.calculateOfflineProgression(elapsedMs);
     
-    this.saveToLocal(useGameStore.getState());
+    await this.saveToLocal(useGameStore.getState());
   },
 
   getDefaultState() {
@@ -123,6 +123,11 @@ export const SaveSystem = {
       creditsPerHour: 0,
       scrapRatePerHour: 12,
       matsRatePerHour: -5,
+      survivors: [
+        { id: '1', name: 'Jaxon', role: 'Base Logistician', assignedFacility: 'Synth-Farm', level: 1, xp: 0 },
+        { id: '2', name: 'Aria', role: 'Power Systems Engineer', assignedFacility: 'Comms Relay', level: 1, xp: 0 },
+        { id: '3', name: 'Zane', role: 'Base Fabricator', assignedFacility: null, level: 1, xp: 0 },
+      ],
     };
   }
 };

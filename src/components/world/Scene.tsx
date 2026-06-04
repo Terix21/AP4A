@@ -1,9 +1,16 @@
-import { OrthographicCamera, Environment, MapControls, Line } from '@react-three/drei';
+import { OrthographicCamera, Environment, MapControls, Line, ContactShadows } from '@react-three/drei';
 import { useGameStore } from '../../store/gameStore';
 import * as THREE from 'three';
 import Drones from './Drones';
 import { Pathfinding } from '../../systems/Pathfinding';
 import { HapticFeedback } from '../../systems/HapticFeedback';
+
+// Placeholder for future Asset Modernization (Phase 4)
+// import { useGLTF } from '@react-three/drei';
+// useGLTF.preload('/models/command_hub.glb');
+// useGLTF.preload('/models/smelter.glb');
+// useGLTF.preload('/models/synth_farm.glb');
+// useGLTF.preload('/models/data_hub.glb');
 
 export default function Scene() {
   const threatLevel = useGameStore(state => state.threatLevel);
@@ -56,20 +63,38 @@ export default function Scene() {
 
       <Environment preset="night" background blur={0.5} />
 
+      <ContactShadows
+        position={[0, -0.48, 0]}
+        opacity={0.4}
+        scale={25}
+        blur={2}
+        far={1}
+        resolution={256}
+        color="#000000"
+      />
+
       {/* Invisible Floor for Raycasting Waypoints */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -0.49, 0]}
-        onContextMenu={(e) => {
-          e.stopPropagation();
-          const state = useGameStore.getState();
-          const path = Pathfinding.calculatePath(state.dronePosition, [e.point.x, e.point.y, e.point.z]);
-          if (path) {
-            state.setActivePath(path);
-            HapticFeedback.triggerSuccess();
+        onPointerDown={(e) => {
+          // Double-tap detection
+          const now = Date.now();
+          const lastTap = (window as any).lastFloorTap || 0;
+          (window as any).lastFloorTap = now;
+
+          if (now - lastTap < 300) {
+            // Success: Double-tap move
+            e.stopPropagation();
+            const state = useGameStore.getState();
+            const path = Pathfinding.calculatePath(state.dronePosition, [e.point.x, e.point.y, e.point.z]);
+            if (path) {
+              state.setActivePath(path);
+              HapticFeedback.triggerSuccess();
+            }
           }
         }}
-        onDoubleClick={(e) => {
+        onContextMenu={(e) => {
           e.stopPropagation();
           const state = useGameStore.getState();
           const path = Pathfinding.calculatePath(state.dronePosition, [e.point.x, e.point.y, e.point.z]);

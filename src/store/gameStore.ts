@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { Survivor } from '../systems/FacilityManager';
+import { NotificationSystem } from '../systems/NotificationSystem';
 
 export interface QueuedTask {
   id: string;
@@ -39,6 +41,12 @@ export interface GameState {
   scrapRatePerHour: number;
   matsRatePerHour: number;
 
+  // Performance
+  performanceProfile: 'low' | 'high';
+
+  // Personnel
+  survivors: Survivor[];
+
   addScrap: (amount: number) => void;
   addMats: (amount: number) => void;
   addCredits: (amount: number) => void;
@@ -59,6 +67,13 @@ export interface GameState {
   upgradeFacility: (facility: string) => void;
   addActiveSLA: (creditsPerHourBonus: number) => void;
   
+  // Performance Actions
+  setPerformanceProfile: (profile: 'low' | 'high') => void;
+
+  // Personnel Actions
+  setSurvivors: (survivors: Survivor[]) => void;
+  updateSurvivor: (id: string, updates: Partial<Survivor>) => void;
+
   queueTask: (task: QueuedTask) => void;
   advanceTime: (elapsedMs: number) => void;
 }
@@ -96,7 +111,15 @@ export const useGameStore = create<GameState>((set) => ({
 
   scrapRatePerHour: 12,
   matsRatePerHour: -5,
-  
+
+  performanceProfile: 'high',
+
+  survivors: [
+    { id: '1', name: 'Jaxon', role: 'Base Logistician', assignedFacility: 'Synth-Farm', level: 1, xp: 0 },
+    { id: '2', name: 'Aria', role: 'Power Systems Engineer', assignedFacility: 'Comms Relay', level: 1, xp: 0 },
+    { id: '3', name: 'Zane', role: 'Base Fabricator', assignedFacility: null, level: 1, xp: 0 },
+  ],
+
   addScrap: (amount) => set((state) => ({ scrap: Math.max(0, state.scrap + amount) })),
   addMats: (amount) => set((state) => ({ buildingMats: Math.max(0, state.buildingMats + amount) })),
   addCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits + amount) })),
@@ -125,9 +148,23 @@ export const useGameStore = create<GameState>((set) => ({
   })),
   addActiveSLA: (bonus) => set((state) => ({ activeSLAs: state.activeSLAs + 1, creditsPerHour: state.creditsPerHour + bonus })),
 
-  queueTask: (task) => set((state) => ({
-    activeQueues: [...state.activeQueues, task]
+  setPerformanceProfile: (profile) => set({ performanceProfile: profile }),
+
+  setSurvivors: (survivors) => set({ survivors }),
+  updateSurvivor: (id, updates) => set((state) => ({
+    survivors: state.survivors.map(s => s.id === id ? { ...s, ...updates } : s)
   })),
+
+  queueTask: (task) => set((state) => {
+    // Android Notification Hook
+    const title = task.type.charAt(0).toUpperCase() + task.type.slice(1) + " Complete";
+    const body = `Sector Command: ${task.type} operation finished in Sector 7.`;
+    NotificationSystem.scheduleTaskCompletion(task.id, title, body, task.timeRemainingMs);
+
+    return {
+      activeQueues: [...state.activeQueues, task]
+    };
+  }),
 
   advanceTime: (elapsedMs) => set((state) => {
     const hoursElapsed = elapsedMs / (1000 * 60 * 60);

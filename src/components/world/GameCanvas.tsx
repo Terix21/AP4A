@@ -8,7 +8,7 @@ export default function GameCanvas() {
   return (
     <>
       <div className="absolute inset-0 z-0 bg-gray-950 pointer-events-auto">
-        <Canvas gl={{ antialias: true, preserveDrawingBuffer: true }}>
+        <Canvas gl={{ antialias: true, preserveDrawingBuffer: true }} dpr={[1, 2]}>
           <Suspense fallback={null}>
             <Scene />
             <Effects />
