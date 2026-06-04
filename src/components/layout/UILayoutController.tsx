@@ -6,6 +6,9 @@ import { SaveSystem } from '../../systems/SaveSystem';
 import { TickSystem } from '../../systems/TickSystem';
 import { useGameStore } from '../../store/gameStore';
 import { X, Cpu } from 'lucide-react';
+import { App } from '@capacitor/app';
+import { HapticFeedback } from '../../systems/HapticFeedback';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 interface UILayoutControllerProps {
   children: ReactNode;
@@ -15,14 +18,83 @@ export default function UILayoutController({ children }: UILayoutControllerProps
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const selectedEntityId = useGameStore(state => state.selectedEntityId);
   const setSelectedEntity = useGameStore(state => state.setSelectedEntity);
+  const activeQueues = useGameStore(state => state.activeQueues);
+  const [prevQueuesLength, setPrevQueuesLength] = useState(activeQueues.length);
+
+  // Task Completion Haptics & Autosave
+  useEffect(() => {
+    if (activeQueues.length < prevQueuesLength) {
+      console.log('[UILayoutController] Queue task completed. Triggering haptic and autosave.');
+      HapticFeedback.triggerSuccess();
+      SaveSystem.saveToLocal(useGameStore.getState());
+    }
+    setPrevQueuesLength(activeQueues.length);
+  }, [activeQueues, prevQueuesLength]);
 
   useEffect(() => {
     SaveSystem.loadOrFailover().then(() => {
       TickSystem.startEngine();
     });
 
+    // Native App pause / background autosave trigger
+    const registerAppStateListener = async () => {
+      try {
+        const handler = await App.addListener('appStateChange', ({ isActive }) => {
+          if (!isActive) {
+            console.log('[App] Application minimized/paused. Triggering autosave.');
+            SaveSystem.saveToLocal(useGameStore.getState());
+          }
+        });
+        return handler;
+      } catch (e) {
+        console.warn('[UILayoutController] Failed to bind native appStateChange listener (running in browser)', e);
+        return null;
+      }
+    };
+
+    const stateListenerPromise = registerAppStateListener();
+
+    // Programmatic StatusBar styling for Android
+    const configureStatusBar = async () => {
+      try {
+        await StatusBar.setStyle({ style: Style.Dark });
+        await StatusBar.setBackgroundColor({ color: '#030712' });
+        await StatusBar.setOverlaysWebView({ overlay: true });
+      } catch (e) {
+        console.warn('[UILayoutController] StatusBar plugin failed (running in browser)', e);
+      }
+    };
+    configureStatusBar();
+
+    // Block native context menus (long-press popups)
+    const preventDefaultContextMenu = (e: MouseEvent) => e.preventDefault();
+    window.addEventListener('contextmenu', preventDefaultContextMenu);
+
+    // Global Click Haptics for interactive elements
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'A' ||
+        target.closest('button') ||
+        target.closest('a') ||
+        target.classList.contains('pointer-events-auto') ||
+        window.getComputedStyle(target).cursor === 'pointer'
+      ) {
+        HapticFeedback.triggerSelection();
+      }
+    };
+    window.addEventListener('click', handleGlobalClick);
+
     return () => {
       TickSystem.stopEngine();
+      window.removeEventListener('contextmenu', preventDefaultContextMenu);
+      window.removeEventListener('click', handleGlobalClick);
+      stateListenerPromise.then((handler) => {
+        if (handler) {
+          handler.remove();
+        }
+      });
     };
   }, []);
 

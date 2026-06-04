@@ -3,6 +3,7 @@ import { useGameStore } from '../../store/gameStore';
 import * as THREE from 'three';
 import Drones from './Drones';
 import { Pathfinding } from '../../systems/Pathfinding';
+import { HapticFeedback } from '../../systems/HapticFeedback';
 
 export default function Scene() {
   const threatLevel = useGameStore(state => state.threatLevel);
@@ -17,11 +18,13 @@ export default function Scene() {
   const handleSelect = (e: any, id: string) => {
     e.stopPropagation();
     useGameStore.getState().setSelectedEntity(id);
+    HapticFeedback.triggerSelection();
   };
 
   const handleDoubleClick = (e: any, route: string) => {
     e.stopPropagation();
     useGameStore.getState().requestNavigation(route);
+    HapticFeedback.triggerSuccess();
   };
 
   return (
@@ -63,6 +66,16 @@ export default function Scene() {
           const path = Pathfinding.calculatePath(state.dronePosition, [e.point.x, e.point.y, e.point.z]);
           if (path) {
             state.setActivePath(path);
+            HapticFeedback.triggerSuccess();
+          }
+        }}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          const state = useGameStore.getState();
+          const path = Pathfinding.calculatePath(state.dronePosition, [e.point.x, e.point.y, e.point.z]);
+          if (path) {
+            state.setActivePath(path);
+            HapticFeedback.triggerSuccess();
           }
         }}
       >
