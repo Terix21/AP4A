@@ -1,3 +1,7 @@
+<!--
+	NOTE: This document describes the game concept and world for Aether Protocol as originally designed for the Electron/React/Three.js stack.
+	The project is now being migrated to Unity (C#). For up-to-date architecture and implementation, see UNITY_MIGRATION_PLAN.md.
+-->
 Aether Protocol — Concept Document
 Core Concept
 Aether Protocol is an Idle Management Simulation set in a technologically advanced, post-collapse region of space. Players act as “Base Commander," tasked with establishing, managing, expanding, and securing a colony base against internal and external threats.The Player will either start as a Veridian Commander sent from an orbital station, or an Indigenous commander on one of the inhabited planets. The game blends the high-stakes survival management of Frozen City, the automated progression of Wasteland Life, and the strategic combat/trading cycles of Idle Outpost.

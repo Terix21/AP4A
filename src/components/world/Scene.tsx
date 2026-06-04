@@ -32,33 +32,31 @@ export default function Scene() {
         rotation={[-Math.atan(1 / Math.sqrt(2)), Math.PI / 4, 0]} // Isometric angle
         zoom={30}
       />
-      
-      <MapControls 
-        enableRotate={false} 
-        enableZoom={true} 
+
+      <MapControls
+        enableRotate={false}
+        enableZoom={true}
         enablePan={true}
-        minZoom={10} 
-        maxZoom={120} 
+        minZoom={10}
+        maxZoom={120}
         panSpeed={1.5}
       />
-      
+
       <ambientLight intensity={ambientIntensity} />
-      <directionalLight 
-        position={[5, 10, 5]} 
-        intensity={1.5} 
+      <directionalLight
+        position={[5, 10, 5]}
+        intensity={1.5}
         color={directionalColor}
-        castShadow 
+        castShadow
         shadow-mapSize={[1024, 1024]}
       />
-      
-      <Environment preset="night" background blur={0.8} />
 
-      <Environment preset="city" background blur={0.1} />
+      <Environment preset="night" background blur={0.5} />
 
       {/* Invisible Floor for Raycasting Waypoints */}
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, -0.49, 0]} 
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.49, 0]}
         onContextMenu={(e) => {
           e.stopPropagation();
           const state = useGameStore.getState();
@@ -74,25 +72,25 @@ export default function Scene() {
 
       {/* Patrol Path Marker */}
       {activePath && activePath.length > 1 && (
-        <Line 
-          points={activePath.map(p => new THREE.Vector3(p[0], 0.1, p[2]))} 
-          color="#00ffcc" 
-          lineWidth={2} 
-          dashed={true} 
-          dashSize={0.5} 
+        <Line
+          points={activePath.map(p => new THREE.Vector3(p[0], 0.1, p[2]))}
+          color="#00ffcc"
+          lineWidth={2}
+          dashed={true}
+          dashSize={0.5}
           gapSize={0.2}
         />
       )}
 
       {/* Selection Ring */}
       {selectedEntityId && (
-        <mesh 
+        <mesh
           position={
             selectedEntityId === 'Command Hub' ? [0, 0.1, 0] :
-            selectedEntityId === 'Scrap Smelter' ? [-5, 0.1, -2] :
-            selectedEntityId === 'Synth-Farm' ? [4, 0.1, -4] :
-            selectedEntityId === 'DataHub' ? [3, 0.1, 5] : [0, 0, 0]
-          } 
+              selectedEntityId === 'Scrap Smelter' ? [-5, 0.1, -2] :
+                selectedEntityId === 'Synth-Farm' ? [4, 0.1, -4] :
+                  selectedEntityId === 'DataHub' ? [3, 0.1, 5] : [0, 0, 0]
+          }
           rotation={[-Math.PI / 2, 0, 0]}
         >
           <ringGeometry args={[2.5, 2.8, 32]} />
@@ -101,8 +99,8 @@ export default function Scene() {
       )}
 
       {/* Central Command Hub */}
-      <group 
-        onClick={(e) => handleSelect(e, 'Command Hub')} 
+      <group
+        onClick={(e) => handleSelect(e, 'Command Hub')}
         onDoubleClick={(e) => handleDoubleClick(e, '/facilities')}
       >
         <mesh castShadow receiveShadow position={[0, 1.5, 0]}>
@@ -117,8 +115,8 @@ export default function Scene() {
       </group>
 
       {/* The Smelter */}
-      <group 
-        onClick={(e) => handleSelect(e, 'Scrap Smelter')} 
+      <group
+        onClick={(e) => handleSelect(e, 'Scrap Smelter')}
         onDoubleClick={(e) => handleDoubleClick(e, '/facilities')}
       >
         <mesh castShadow receiveShadow position={[-5, 1, -2]}>
@@ -133,8 +131,8 @@ export default function Scene() {
       </group>
 
       {/* The SynthFarm */}
-      <group 
-        onClick={(e) => handleSelect(e, 'Synth-Farm')} 
+      <group
+        onClick={(e) => handleSelect(e, 'Synth-Farm')}
         onDoubleClick={(e) => handleDoubleClick(e, '/facilities')}
       >
         <mesh castShadow receiveShadow position={[4, 0.5, -4]}>
@@ -149,8 +147,8 @@ export default function Scene() {
       </group>
 
       {/* The DataHub */}
-      <group 
-        onClick={(e) => handleSelect(e, 'DataHub')} 
+      <group
+        onClick={(e) => handleSelect(e, 'DataHub')}
         onDoubleClick={(e) => handleDoubleClick(e, '/tech')}
       >
         <mesh castShadow receiveShadow position={[3, 2, 5]}>

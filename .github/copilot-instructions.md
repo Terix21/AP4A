@@ -1,4 +1,5 @@
-# Copilot Instructions for Gulp (Electron + Vite + React + Chakra UI)
+
+# Copilot Instructions for Aether Protocol (Electron + Vite + React + Chakra UI, Unity Migration)
 
 ## Bootstrap Requirements (Run First)
 - Before handling a request, verify these files exist:
@@ -6,6 +7,7 @@
   - `.github/instructions/edge-cases.instructions.md`
   - `.github/instructions/context-management.instructions.md`
   - `.github/instructions/secure-code.instructions.md`
+  - `.github/instructions/unity.instructions.md`  # Unity migration support
   - `.github/instructions/_template.instructions.md`
   - `.vscode/settings.json`
 - If any are missing:
@@ -19,12 +21,14 @@
 - If no framework-specific match exists, apply general coding defaults.
 - For new frameworks/languages not in the registry, create `.github/instructions/<framework>.instructions.md` using `_template.instructions.md` and add it to the registry.
 - Use full workspace context when diagnosing issues, including active files and recent terminal command context.
+- For Unity migration or C#-related tasks, always load `unity.instructions.md` and cross-reference UNITY_MIGRATION_PLAN.md.
 
 ## Registry
 - `electron` -> `.github/instructions/electron.instructions.md` (active)
 - `vite` -> `.github/instructions/vite.instructions.md` (active)
 - `react` -> `.github/instructions/react.instructions.md` (active)
 - `secure-code` -> `.github/instructions/secure-code.instructions.md` (active)
+- `unity` -> `.github/instructions/unity.instructions.md` (active)
 
 ## Append-Only Knowledge Updates
 - Keep these instruction logs append-only.
@@ -43,27 +47,34 @@
 
 ## Project Scope
 - Desktop app built with Electron, React renderer components, Chakra UI, and a Vite-based asset pipeline.
-- Runtime entry point is `dist/main/index.js` (from `package.json -> main`).
-- Source code lives in `src/`; `dist/` is generated output.
+- Unity (C#) migration in progress: see UNITY_MIGRATION_PLAN.md and unity.instructions.md for all new engine/platform work.
+- Runtime entry point is `dist/main/index.js` (from `package.json -> main`) for Electron; Unity build entry is `Assets/Scenes/MainMenu` (target).
+- Source code lives in `src/` (web) and `Assets/` (Unity); `dist/` is generated output for Electron, Unity build output is managed by the Unity Editor.
 
 ## Source of Truth
-- Always edit source files under `src/` and supporting build/runtime config files (for example `vite.config.js` and scripts under `scripts/`).
-- Never hand-edit `dist/` files except for temporary debugging.
-- If a change is made in `src/`, mirror it by running the build/watch pipeline before validating runtime behavior.
+- Always edit source files under `src/` (Electron/web) and `Assets/` (Unity) and supporting build/runtime config files (for example `vite.config.js`, Unity project settings, and scripts under `scripts/`).
+- Never hand-edit `dist/` or Unity build output except for temporary debugging.
+- If a change is made in `src/`, mirror it by running the build/watch pipeline before validating runtime behavior. For Unity, use the Unity Editor to build and validate.
 
 ## Build and Run Workflow
-- Build once: `npm run build`.
-- Watch/dev mode: `npm run dev`.
-- Start app: `npm run start`.
-- If UI changes are not visible, verify the corresponding file exists under `dist/renderer/`.
+- Electron/Web:
+  - Build once: `npm run build`.
+  - Watch/dev mode: `npm run dev`.
+  - Start app: `npm run start`.
+  - If UI changes are not visible, verify the corresponding file exists under `dist/renderer/`.
+- Unity:
+  - Open project in Unity 2022.3+ (LTS) with URP.
+  - Build via Unity Editor (File > Build Settings).
+  - Validate scenes and systems per UNITY_MIGRATION_PLAN.md.
 
 ## Repository Conventions
-- Module system: CommonJS (`require`, `module.exports`).
+- Module system: CommonJS (`require`, `module.exports`) for Electron/web; C# for Unity.
 - Keep `src/main/` for Electron main/preload code and `src/renderer/` for browser UI code.
+- Unity code and assets live under `Assets/` (see UNITY_MIGRATION_PLAN.md for structure).
 - Keep React renderer entry in `src/renderer/js/main.jsx` and components in `src/renderer/js/components/`.
 - Wrap renderer root with `ChakraProvider` and prefer Chakra primitives in component UI.
 - Prefer small, named functions for build/runtime setup and Electron lifecycle wiring.
-- Keep semicolon usage and single-quote string style consistent with existing files.
+- Keep semicolon usage and single-quote string style consistent with existing files (Electron/web). Use Unity C# conventions for Unity code.
 
 ## Electron Safety Rules
 - Preserve separation between main and renderer processes.
@@ -82,20 +93,29 @@
 - Validate both `npm run build` and `npm run dev` after configuration changes.
 
 ## Change Checklist for Copilot
-- Did you edit `src/` instead of `dist/`?
-- Did you run/update the relevant Vite build/dev command(s)?
-- If preload or main changed, did you verify Electron startup still works?
-- If renderer changed, did you keep Node.js access out of renderer scripts?
-- If adding dependencies, are they in the correct section (`dependencies` vs `devDependencies`)?
+- For Electron/web:
+  - Did you edit `src/` instead of `dist/`?
+  - Did you run/update the relevant Vite build/dev command(s)?
+  - If preload or main changed, did you verify Electron startup still works?
+  - If renderer changed, did you keep Node.js access out of renderer scripts?
+  - If adding dependencies, are they in the correct section (`dependencies` vs `devDependencies`)?
+- For Unity:
+  - Did you edit `Assets/` and not Unity build output?
+  - Did you follow the migration mapping in UNITY_MIGRATION_PLAN.md?
+  - Did you use ScriptableObjects for state, MonoBehaviours for systems, and Unity scenes for screens?
+  - Did you validate builds in the Unity Editor?
 
 ## Known Risks to Watch
 - `npm run start` depends on prebuilt `dist/` artifacts; missing build output will break startup.
 - Security regressions can occur if BrowserWindow defaults are relied on instead of explicit settings.
 - Changes under `src/main/` are copied as-is; avoid introducing environment-specific absolute paths.
+- For Unity, asset pipeline or scene misconfiguration can break builds; always validate in Editor.
+- Data migration from web to Unity requires explicit import/export logic (see UNITY_MIGRATION_PLAN.md).
 
 ## Session Summaries
 - For longer threads (3+ back-and-forth exchanges on one task), include a short 5-bullet progress summary when useful.
 - Offer to append durable patterns or lessons learned to the instruction files above.
+- For Unity migration, summarize mapping decisions and any deviations from the plan.
 
 ## Append-Only Directive Update (2026-04-02): Workbench UI and Performance
 - Treat upcoming renderer work as a desktop "Workbench" shell, not a document page.
